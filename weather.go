@@ -68,6 +68,9 @@ func main() {
     var ver bool
     flag.BoolVar(&ver, "version", false, "display version number and exit")
 
+    var show_location bool
+    flag.BoolVar(&show_location, "location", false, "display the location of the forecast")
+
     var week bool
     flag.BoolVar(&week, "week", false, "show the forecast for the entire week")
     flag.Parse()
@@ -81,8 +84,12 @@ func main() {
 
     // get the latitude and longitude
     lat, lon := getLatLong()
-    forecast_url := getForecastUrl(lat, lon)
+    forecast_url, place := getForecastInformation(lat, lon)
     forecast := getForecast(forecast_url)
+
+    if show_location {
+        fmt.Println("🗺 ", place)
+    }
 
     day := 0
     if week { day = 13 }
@@ -90,6 +97,7 @@ func main() {
     for i := 0; i <= day; i++ {
         printForecast(forecast, i)
     }
+
 
 }
 
@@ -142,7 +150,8 @@ func getLatLong() (float64, float64) {
 }
 
 // get weather.gov forecast point from latitude and longitude
-func getForecastUrl(lat, lon float64) string {
+// return the forecast url and location
+func getForecastInformation(lat, lon float64) (string, string) {
 
     lat_str := fmt.Sprintf("%f", lat)
     lon_str := fmt.Sprintf("%f", lon)
@@ -214,7 +223,10 @@ func getForecastUrl(lat, lon float64) string {
     // get the forecast URL
     forecast_url := weather.Properties.Forecast
 
-    return forecast_url
+    // get location (city, state)
+    location := weather.Properties.RelativeLocation.Properties.City + ", " + weather.Properties.RelativeLocation.Properties.State
+
+    return forecast_url, location
 
 }
 
@@ -248,13 +260,15 @@ func printForecast(forecast Forecast, day int) {
     temp := fmt.Sprintf("%d", forecast.Properties.Periods[day].Temperature)
 
     forecast_for := forecast.Properties.Periods[day].Name
-    temperature := temp + forecast.Properties.Periods[day].TemperatureUnit
+    temperature := temp + "º" + forecast.Properties.Periods[day].TemperatureUnit
     detailed_forecast := forecast.Properties.Periods[day].DetailedForecast
     short := forecast.Properties.Periods[day].ShortForecast
 
     icon := getIcon(short)
 
-    fmt.Println(forecast_for+":", icon, temperature, detailed_forecast)
+    //fmt.Println(forecast_for+":\t\t", icon, temperature, detailed_forecast)
+
+    fmt.Printf("%-16s %s %s %s\n", forecast_for+":", icon, temperature, detailed_forecast)
 }
 
 // return an icon based on short forecast string
