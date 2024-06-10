@@ -17,3 +17,17 @@ Use the `-week` switch to show forecast for the entire week. Use `-location` to 
 Sample output:
 
 <img width="1118" alt="screenshot" src="https://github.com/maciakl/weather/assets/189576/015463ae-4f69-49a9-8421-027632de7e63">
+
+
+ On Windows, this tool is distributed via `scoop` (see [scoop.sh](https://scoop.sh)).
+
+ First, you need to add my bucket:
+
+    scoop bucket add maciak https://github.com/maciakl/bucket
+    scoop update
+
+ Next simply run:
+ 
+    scoop install weather
+
+If you don't want to use `scoop` you can simply download the executable from the release page and extract it somewhere in your path.
