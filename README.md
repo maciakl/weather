@@ -18,6 +18,7 @@ Sample output:
 
 <img width="1118" alt="screenshot" src="https://github.com/maciakl/weather/assets/189576/015463ae-4f69-49a9-8421-027632de7e63">
 
+## Installing
 
  On Windows, this tool is distributed via `scoop` (see [scoop.sh](https://scoop.sh)).
 
