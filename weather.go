@@ -8,6 +8,8 @@ import (
     "net/http"
     "encoding/json"
     "path/filepath"
+
+    "github.com/fatih/color"
 )
 
 const version = "0.1.0"
@@ -257,10 +259,11 @@ func getForecast(forecast_url string) Forecast {
 func printForecast(forecast Forecast, day int) {
 
     // convert the temperature to a string
-    temp := fmt.Sprintf("%d", forecast.Properties.Periods[day].Temperature)
+    //temp := fmt.Sprintf("%d", forecast.Properties.Periods[day].Temperature)
+    temperature := getTempString(forecast.Properties.Periods[day].Temperature, forecast.Properties.Periods[day].TemperatureUnit)
 
     forecast_for := forecast.Properties.Periods[day].Name
-    temperature := temp + "º" + forecast.Properties.Periods[day].TemperatureUnit
+
     detailed_forecast := forecast.Properties.Periods[day].DetailedForecast
     short := forecast.Properties.Periods[day].ShortForecast
 
@@ -268,7 +271,7 @@ func printForecast(forecast Forecast, day int) {
 
     //fmt.Println(forecast_for+":\t\t", icon, temperature, detailed_forecast)
 
-    fmt.Printf("%-16s %s %s %s\n", forecast_for+":", icon, temperature, detailed_forecast)
+    fmt.Fprintf(color.Output, "%-16s %s %s %s\n", forecast_for+":", icon, temperature, detailed_forecast)
 }
 
 // return an icon based on short forecast string
@@ -322,4 +325,23 @@ func getIcon(short string) string {
     // if nothing matches return an empty string
     return ""
 
+}
+
+
+// formats the temperature string
+func getTempString(temp int, unit string) string {
+    
+    temp_str := fmt.Sprintf("%dº%s", temp, unit)
+
+    if temp > 90 {
+        return color.RedString(temp_str)
+    } else if temp > 80 {
+        return color.YellowString(temp_str)
+    } else if temp < 40 {
+        return color.CyanString(temp_str)
+    } else if temp < 32 {
+        return color.BlueString(temp_str)
+    } else {
+        return temp_str
+    }
 }
