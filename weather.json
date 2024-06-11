@@ -1,9 +1,9 @@
 {
-    "version": "0.1.1",
+    "version": "0.1.3",
     "description": "A new scoop package",
     "homepage": "https://github.com/maciakl/weather",
     "checkver": "github",
-    "url": "https://github.com/maciakl/weather/releases/download/v0.1.1/weather_win.zip",
+    "url": "https://github.com/maciakl/weather/releases/download/v0.1.3/weather_win.zip",
     "bin": "weather.exe",
     "license": "freeware"
 }
