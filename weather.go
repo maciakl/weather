@@ -12,7 +12,7 @@ import (
     "github.com/fatih/color"
 )
 
-const version = "0.1.1"
+const version = "0.1.2"
 
 // the weather forecast struct
 // the relvant data is in the properties.Periods array
@@ -259,7 +259,6 @@ func getForecast(forecast_url string) Forecast {
 func printForecast(forecast Forecast, day int) {
 
     // convert the temperature to a string
-    //temp := fmt.Sprintf("%d", forecast.Properties.Periods[day].Temperature)
     temperature := getTempString(forecast.Properties.Periods[day].Temperature, forecast.Properties.Periods[day].TemperatureUnit)
 
     forecast_for := forecast.Properties.Periods[day].Name
@@ -268,8 +267,6 @@ func printForecast(forecast Forecast, day int) {
     short := forecast.Properties.Periods[day].ShortForecast
 
     icon := getIcon(short)
-
-    //fmt.Println(forecast_for+":\t\t", icon, temperature, detailed_forecast)
 
     fmt.Fprintf(color.Output, "%-16s %s %s %s\n", forecast_for+":", icon, temperature, detailed_forecast)
 }
@@ -303,8 +300,8 @@ func getIcon(short string) string {
         "Tropical Storm": "🌀",
         "Blizzard": "❄️",
         "Ice": "❄️",
-        "Freezing Rain": "🌧️",
-        "Freezing Drizzle": "🌧️",
+        "Freezing Rain": "🌨",
+        "Freezing Drizzle": "🌨",
         "Drizzle": "🌧️",
         "Freezing Fog": "🌫️",
         "Heavy Rain": "🌧️",
@@ -312,7 +309,7 @@ func getIcon(short string) string {
         "Heavy Thunderstorms": "⛈️",
         "Heavy Showers": "🌧️",
         "Heavy Drizzle": "🌧️",
-        "Heavy Freezing Rain": "🌧️",
+        "Heavy Freezing Rain": "🌨",
     }
 
     // loop through the map and return the icon
@@ -322,8 +319,8 @@ func getIcon(short string) string {
         }
     }
 
-    // if nothing matches return an empty string
-    return ""
+    // if nothing matches return an generic icon
+    return "🌡️"
 
 }
 
