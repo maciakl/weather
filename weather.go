@@ -330,13 +330,13 @@ func getTempString(temp int, unit string) string {
     
     temp_str := fmt.Sprintf("%dº%s", temp, unit)
 
-    if temp > 90 {
+    if temp >= 90 {
         return color.RedString(temp_str)
-    } else if temp > 80 {
+    } else if temp >= 80 {
         return color.YellowString(temp_str)
-    } else if temp < 40 {
+    } else if temp <= 50 {
         return color.CyanString(temp_str)
-    } else if temp < 32 {
+    } else if temp <= 32 {
         return color.BlueString(temp_str)
     } else {
         return temp_str
