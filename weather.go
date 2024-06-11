@@ -90,7 +90,7 @@ func main() {
     forecast := getForecast(forecast_url)
 
     if show_location {
-        fmt.Println("🗺 ", place)
+        fmt.Fprintln(color.Output, "🗺 ", color.GreenString(place))
     }
 
     day := 0
