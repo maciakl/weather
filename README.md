@@ -35,14 +35,18 @@ Weekly forecast output:
 
 ## Installing
 
- On Windows, this tool is distributed via `scoop` (see [scoop.sh](https://scoop.sh)).
+Install via go:
+ 
+    go install github.com/maciakl/weather@latest
 
- First, you need to add my bucket:
+On Windows, this tool is distributed via `scoop` (see [scoop.sh](https://scoop.sh)).
+
+First, you need to add my bucket:
 
     scoop bucket add maciak https://github.com/maciakl/bucket
     scoop update
 
- Next simply run:
+Next simply run:
  
     scoop install weather
 
