@@ -13,7 +13,7 @@ import (
     "github.com/fatih/color"
 )
 
-const version = "0.1.4"
+const version = "0.1.5"
 
 // the weather forecast struct
 // the relvant data is in the properties.Periods array
@@ -78,7 +78,8 @@ func main() {
     flag.BoolVar(&week, "week", false, "show the forecast for the entire week")
 
     var zip string
-    flag.StringVar(&zip, "zip", "00000", "show the forecast for a specific US zip code")
+    flag.StringVar(&zip, "zip", "none", "show the forecast for a specific US zip code")
+
     flag.Parse()
 
     // show version and exit
@@ -90,7 +91,7 @@ func main() {
     var lat, lon float64
 
     // get the latitude and longitude
-    if zip != "00000" {
+    if zip != "none" {
         lat, lon = getLatLongFromZip(zip)
     } else {
         lat, lon = getLatLong()
@@ -194,10 +195,20 @@ func getLatLongFromZip(zip string) (float64, float64) {
             fmt.Println("Error decoding location information:", err)
             os.Exit(1)
         }
+
+        if len(loc.Places) == 0 {
+            fmt.Println("Error: Invalid zip code")
+            os.Exit(1)
+        }
     
         // get the latitude and longitude
-        lat, _ := strconv.ParseFloat(loc.Places[0].Latitude, 64)
-        lon, _ := strconv.ParseFloat(loc.Places[0].Longitude, 64)
+        lat, laterr := strconv.ParseFloat(loc.Places[0].Latitude, 64)
+        lon, lonerr := strconv.ParseFloat(loc.Places[0].Longitude, 64)
+
+        if laterr != nil || lonerr != nil {
+            fmt.Println("Error converting zip code to location data")
+            os.Exit(1)
+        }
     
         //return lat, lon
         return lat, lon
