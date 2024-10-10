@@ -30,13 +30,13 @@ Use the `-week` switch to show forecast for the entire week.
 
 ## Look and Feel
 
-Sample output (Windows):
+Sample output:
 
-<img width="646" alt="screenshot3" src="https://github.com/maciakl/weather/assets/189576/ff372885-3f9e-4c1b-88c6-904b8c23fa7f">
+<img width="702" alt="screenshot2" src="https://github.com/user-attachments/assets/fa272d27-055c-45f5-b2c4-35a878eca05a">
 
-Weekly forecast output:
+Weekly forecast for specific location:
 
-<img width="1015" alt="screenshot2" src="https://github.com/maciakl/weather/assets/189576/42ebad4d-1ed8-4447-8296-4ae5be41d84f">
+<img width="1062" alt="screenshot" src="https://github.com/user-attachments/assets/765bc482-c8ce-4e28-8272-21fb7d670d12">
 
 
 ## Installing
