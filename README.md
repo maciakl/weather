@@ -1,4 +1,4 @@
-# weather
+# 🌤 weather
 
 Show weather forecast on the command line.
 
@@ -23,10 +23,12 @@ Please note that the `-location` displays your forecast area returned by the Nat
             show the location of the forecast
       -week
             show the forecast for the entire week
-      -zip
+      -zip <zip code>
             show the forecast a specific zip code
 
-Use the `-week` switch to show forecast for the entire week.
+Example:
+
+    weather -week -zip 12345 -location
 
 ## Look and Feel
 
