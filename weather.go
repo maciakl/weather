@@ -5,6 +5,7 @@ import (
     "fmt"
     "flag"
     "strings"
+    "strconv"
     "net/http"
     "encoding/json"
     "path/filepath"
@@ -12,7 +13,7 @@ import (
     "github.com/fatih/color"
 )
 
-const version = "0.1.3"
+const version = "0.1.4"
 
 // the weather forecast struct
 // the relvant data is in the properties.Periods array
@@ -75,6 +76,9 @@ func main() {
 
     var week bool
     flag.BoolVar(&week, "week", false, "show the forecast for the entire week")
+
+    var zip string
+    flag.StringVar(&zip, "zip", "00000", "show the forecast for a specific US zip code")
     flag.Parse()
 
     // show version and exit
@@ -83,9 +87,15 @@ func main() {
         os.Exit(0)
     }
 
+    var lat, lon float64
 
     // get the latitude and longitude
-    lat, lon := getLatLong()
+    if zip != "00000" {
+        lat, lon = getLatLongFromZip(zip)
+    } else {
+        lat, lon = getLatLong()
+    }
+        
     forecast_url, place := getForecastInformation(lat, lon)
     forecast := getForecast(forecast_url)
 
@@ -149,6 +159,49 @@ func getLatLong() (float64, float64) {
 
     //return lat, lon
     return lat, lon
+}
+
+// get latitude and longitude based on user provided US zip cdode
+func getLatLongFromZip(zip string) (float64, float64) {
+    
+        // get http://api.zippopotam.us/us/ and parse
+        resp, err := http.Get("http://api.zippopotam.us/us/" + zip)
+        if err != nil {
+            fmt.Println("Error getting location information:", err)
+            os.Exit(1)
+        }
+        defer resp.Body.Close()
+    
+        // the location struct
+        type Location struct {
+            PostCode            string `json:"post code"`
+            Country             string `json:"country"`
+            CountryAbbreviation string `json:"country abbreviation"`
+            Places              []struct {
+                PlaceName         string `json:"place name"`
+                Longitude         string `json:"longitude"`
+                State             string `json:"state"`
+                StateAbbreviation string `json:"state abbreviation"`
+                Latitude          string `json:"latitude"`
+            } `json:"places"`
+        }
+    
+        var loc Location
+    
+        // decode the JSON response
+        err = json.NewDecoder(resp.Body).Decode(&loc)
+        if err != nil {
+            fmt.Println("Error decoding location information:", err)
+            os.Exit(1)
+        }
+    
+        // get the latitude and longitude
+        lat, _ := strconv.ParseFloat(loc.Places[0].Latitude, 64)
+        lon, _ := strconv.ParseFloat(loc.Places[0].Longitude, 64)
+    
+        //return lat, lon
+        return lat, lon
+    
 }
 
 // get weather.gov forecast point from latitude and longitude
