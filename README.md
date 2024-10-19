@@ -8,11 +8,11 @@ This tool queries the [National Weather Service](https://weather-gov.github.io/a
 
 By default, your location is determined by based on ip address geolocation via [ip-api.com](https://ip-api.com/) and then passed to weather service API to get your forecasting area.
 
+Note that using a VPN may skew the results.
+
 You can override this behavior, by using the `-zip` switch and providing a US zip code to see a forecast for that specific location. In that case, your geographical location will be determined via [Zipppopotam.us](https://api.zippopotam.us/) API instead.
 
-Note that using a VPN may skew the results. You can use the `-location` switch to check what location you are getting the forecast, and if it's incorrect, use the `-zip` switch to provide the correct zip code. Note that this is currently only supported for zip codes.
-
-Please note that the `-location` displays your forecast area returned by the National Weather Service API based on your latitude and longtitude. The forcast arease are sometimes larger than a zip code, so you may not always see your exact town name displayed -- this is normal.
+You can use the `-location` switch to check what location of forecast. Please note that the `-location` displays your forecast area returned by the National Weather Service API based on your latitude and longtitude. The forcast areas are sometimes larger than a zip codes, so you may not always see your exact town name displayed -- this is normal.
 
 ## Usage
 
