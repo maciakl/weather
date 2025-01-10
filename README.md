@@ -43,18 +43,34 @@ Weekly forecast for specific location:
 
 ## Installing
 
-Install via go:
+There are few different ways:
+
+### Platform Independent
+
+ Install via `go`:
  
     go install github.com/maciakl/weather@latest
 
+### Linux
+
+On Linux (requires `wget` & `unzip`, installs to `/usr/local/bin`):
+
+    p="weather" && wget -qN "https://github.com/maciakl/${p}/releases/latest/download/${p}_lin.zip" && unzip -oq ${p}_lin.zip && rm -f ${p}_lin.zip && chmod +x ${p} && sudo mv ${p} /usr/local/bin
+
+To uninstall, simply delete it:
+
+    rm -f /usr/local/bin/jjmp
+
+### Windows
+
 On Windows, this tool is distributed via `scoop` (see [scoop.sh](https://scoop.sh)).
 
-First, you need to add my bucket:
+ First, you need to add my bucket:
 
     scoop bucket add maciak https://github.com/maciakl/bucket
     scoop update
 
-Next simply run:
+ Next simply run:
  
     scoop install weather
 
