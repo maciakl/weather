@@ -34,11 +34,11 @@ Example:
 
 Sample output:
 
-<img width="702" alt="screenshot2" src="https://github.com/user-attachments/assets/fa272d27-055c-45f5-b2c4-35a878eca05a">
+![weather1](https://github.com/user-attachments/assets/712adfcb-4ae5-4a6e-af6a-6c9fc3575756)
 
 Weekly forecast for specific location:
 
-<img width="1062" alt="screenshot" src="https://github.com/user-attachments/assets/765bc482-c8ce-4e28-8272-21fb7d670d12">
+![weather2](https://github.com/user-attachments/assets/251448fc-d81f-4291-a906-31e5939590eb)
 
 
 ## Installing
@@ -59,7 +59,7 @@ On Linux (requires `wget` & `unzip`, installs to `/usr/local/bin`):
 
 To uninstall, simply delete it:
 
-    rm -f /usr/local/bin/weather
+    sudo rm -f /usr/local/bin/weather
 
 ### Windows
 
