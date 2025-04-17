@@ -59,7 +59,7 @@ On Linux (requires `wget` & `unzip`, installs to `/usr/local/bin`):
 
 To uninstall, simply delete it:
 
-    rm -f /usr/local/bin/jjmp
+    rm -f /usr/local/bin/weather
 
 ### Windows
 
