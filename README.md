@@ -51,15 +51,11 @@ There are few different ways:
  
     go install github.com/maciakl/weather@latest
 
-### Linux
+### Mac & Linux
 
-On Linux (requires `wget` & `unzip`, installs to `/usr/local/bin`):
+Install via [grab](https://github.com/maciakl/grab):
 
-    p="weather" && wget -qN "https://github.com/maciakl/${p}/releases/latest/download/${p}_lin.zip" && unzip -oq ${p}_lin.zip && rm -f ${p}_lin.zip && chmod +x ${p} && sudo mv ${p} /usr/local/bin
-
-To uninstall, simply delete it:
-
-    sudo rm -f /usr/local/bin/weather
+    grab maciakl/weather
 
 ### Windows
 
