@@ -13,7 +13,7 @@ import (
     "github.com/fatih/color"
 )
 
-const version = "0.1.6"
+const version = "0.1.7"
 
 // the weather forecast struct
 // the relvant data is in the properties.Periods array

@@ -4,3 +4,5 @@ weather.zip
 weather.tgz
 weather_*.zip
 weather_*.tgz
+# Added by goreleaser init:
+dist/
