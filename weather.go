@@ -2,10 +2,12 @@ package main
 
 import (
     "os"
+	"os/exec"
     "fmt"
     "flag"
     "strings"
     "strconv"
+	"runtime"
     "net/http"
     "encoding/json"
     "path/filepath"
@@ -13,7 +15,7 @@ import (
     "github.com/fatih/color"
 )
 
-const version = "0.1.7"
+const version = "0.2.0"
 
 // the weather forecast struct
 // the relvant data is in the properties.Periods array
@@ -89,12 +91,17 @@ func main() {
     }
 
     var lat, lon float64
-
     // get the latitude and longitude
     if zip != "none" {
         lat, lon = getLatLongFromZip(zip)
     } else {
-        lat, lon = getLatLong()
+
+		var err error
+		lat, lon, err = getLatLongFromOS()
+		if err != nil {
+			// fallback to IP based location
+			lat, lon = getLatLong()
+		}
     }
         
     forecast_url, place := getForecastInformation(lat, lon)
@@ -161,6 +168,67 @@ func getLatLong() (float64, float64) {
     //return lat, lon
     return lat, lon
 }
+
+func getLatLongFromOS() (float64, float64, error) {
+
+	os := runtime.GOOS
+	
+	if strings.Contains(strings.ToLower(os), "windows") {
+		return getLatLongWindows()
+	} else if strings.Contains(strings.ToLower(os), "darwin") {
+		return getLatLongMac()
+	} else if strings.Contains(strings.ToLower(os), "linux") {
+		return getLatLongLinux()
+	} else {
+		return 0, 0, fmt.Errorf("unsupported OS")
+	}
+
+}
+
+func getLatLongWindows() (float64, float64, error) {
+	return 0, 0, fmt.Errorf("not implemented")
+}
+
+func getLatLongMac() (float64, float64, error) {
+
+	coreLocationCLIPath := "/opt/homebrew/bin/CoreLocationCLI"
+
+	// check if CoreLocationCLI is installed
+	_, err := os.Stat(coreLocationCLIPath)
+	if os.IsNotExist(err) {
+		return 0, 0, fmt.Errorf("CoreLocationCLI not installed")
+	}
+
+	// run CoreLocationCLI on the command line, parse the output to get lat and long
+	out, err := exec.Command(coreLocationCLIPath).Output()
+	if err != nil {
+		return 0, 0, err
+	}
+
+	// parse the output
+	parts := strings.Split(strings.TrimSpace(string(out)), " ")
+	if len(parts) != 2 {
+		return 0, 0, fmt.Errorf("invalid output from CoreLocationCLI")
+	}
+
+	lat, err := strconv.ParseFloat(parts[0], 64)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	lon, err := strconv.ParseFloat(parts[1], 64)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return lat, lon, nil
+
+}
+
+func getLatLongLinux() (float64, float64, error) {
+	return 0, 0, fmt.Errorf("not implemented")
+}
+
 
 // get latitude and longitude based on user provided US zip cdode
 func getLatLongFromZip(zip string) (float64, float64) {
