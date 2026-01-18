@@ -209,7 +209,41 @@ func getLatLongFromOS() (float64, float64, error) {
 }
 
 func getLatLongWindows() (float64, float64, error) {
-	return 0, 0, fmt.Errorf("not implemented")
+
+	// quick and dirty PowerShell script to get location
+	pscode := `
+Add-Type -AssemblyName System.Device
+$watcher = New-Object System.Device.Location.GeoCoordinateWatcher
+$watcher.Start()
+while (($watcher.Status -ne "Ready") -and ($watcher.Permission -ne "Denied")) { Start-Sleep -Milliseconds 100 }
+$coord = $watcher.Position.Location
+Write-Output "$($coord.Latitude),$($coord.Longitude)"
+`
+	dmsg("Running a powershell script to get location from Windows location services")
+	out, err := exec.Command("powershell", "-Command", pscode).Output()
+	if err != nil {
+		dmsg("Error running PowerShell: " + err.Error())
+		dmsg("Make sure you allow location services access for PowerShell")
+		return 0, 0, err
+	}
+
+	parts := strings.Split(strings.TrimSpace(string(out)), ",")	
+	if len(parts) != 2 {
+		return 0, 0, fmt.Errorf("invalid output from PowerShell")
+	}
+
+	lat, err := strconv.ParseFloat(parts[0], 64)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	lon, err := strconv.ParseFloat(parts[1], 64)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return lat, lon, nil
+
 }
 
 func getLatLongMac() (float64, float64, error) {
