@@ -105,12 +105,13 @@ func main() {
         lat, lon = getLatLongFromZip(zip)
     } else {
 
-		dmsg("Attempting to retreive location from OS location services")
+		dmsg("Attempting to retrieve location from OS location services")
 		var err error
 		lat, lon, err = getLatLongFromOS()
 		if err != nil {
 			// fallback to IP based location
 			dmsg("Falling back to IP based location")
+			dmsg(err.Error())
 			lat, lon = getLatLong()
 		}
     }
@@ -288,8 +289,66 @@ func getLatLongMac() (float64, float64, error) {
 }
 
 func getLatLongLinux() (float64, float64, error) {
-	dmsg("Linux location services not implemented yet...")
-	return 0, 0, fmt.Errorf("not implemented")
+
+	// check if /usr/lib/geoclue-2.0/demos/where-am-i exists
+	geocluePath := "/usr/lib/geoclue-2.0/demos/where-am-i"
+
+	dmsg("Checking if Geoclue where-am-i is installed")
+	_, err := os.Stat(geocluePath)
+	if os.IsNotExist(err) {
+		dmsg("Geoclue not found in " + geocluePath)
+		dmsg("Install geoclue and its demos to enable location services")
+		return 0, 0, fmt.Errorf("Geoclue is not installed")
+	}
+	
+	// run where-am-i -t 1 to get the location
+	dmsg("Running where-am-i to get location")
+	out, err := exec.Command(geocluePath, "--timeout=1").Output()
+	if err != nil {
+		dmsg("Error running where-am-i: " + err.Error())
+		return 0, 0, err
+	}
+	// parse the output
+	parts := strings.Split(strings.TrimSpace(string(out)), "\n")
+	if len(parts) < 6 {
+		dmsg("Output from where-am-i is too short")
+		return 0, 0, fmt.Errorf("invalid output from where-am-i")
+	}
+
+	// Latitude is on line 4
+	latLine := parts[3]
+	dmsg(latLine)
+	latParts := strings.Split(latLine, ":")
+	if len(latParts) != 2 {
+		dmsg("Invalid latitude line format")
+		return 0, 0, fmt.Errorf("invalid latitude output from where-am-i")
+	}
+	tmplat := strings.TrimSpace(latParts[1])
+	tmplat = strings.ReplaceAll(tmplat, "°", "")
+	lat, err := strconv.ParseFloat(strings.TrimSpace(tmplat), 64)
+	if err != nil {
+		dmsg("Error parsing latitude: " + err.Error())
+		return 0, 0, err
+	}
+
+	// Longitude is on line 5
+	lonLine := parts[4]
+	dmsg(lonLine)
+	lonParts := strings.Split(lonLine, ":")
+	if len(lonParts) != 2 {
+		return 0, 0, fmt.Errorf("invalid longitude output from where-am-i")
+	}
+	// strip spaces and convert to float
+	tmplon := strings.TrimSpace(lonParts[1])
+	tmplon = strings.ReplaceAll(tmplon, "°", "")
+	lon, err := strconv.ParseFloat(strings.TrimSpace(tmplon), 64)
+	if err != nil {
+		dmsg("Error parsing longitude: " + err.Error())
+		return 0, 0, err
+	}
+
+	return lat, lon, nil
+
 }
 
 
