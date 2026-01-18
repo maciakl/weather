@@ -288,6 +288,7 @@ func getLatLongMac() (float64, float64, error) {
 }
 
 func getLatLongLinux() (float64, float64, error) {
+	dmsg("Linux location services not implemented yet...")
 	return 0, 0, fmt.Errorf("not implemented")
 }
 
@@ -295,7 +296,8 @@ func getLatLongLinux() (float64, float64, error) {
 // get latitude and longitude based on user provided US zip cdode
 func getLatLongFromZip(zip string) (float64, float64) {
     
-		dmsg("Getting location for zip code: " + zip + " from zippopotam.us")
+		dmsg("Fetching location from zippopotam.us")
+
         // get http://api.zippopotam.us/us/ and parse
         resp, err := http.Get("http://api.zippopotam.us/us/" + zip)
         if err != nil {
@@ -341,7 +343,6 @@ func getLatLongFromZip(zip string) (float64, float64) {
             os.Exit(1)
         }
     
-        //return lat, lon
         return lat, lon
     
 }
