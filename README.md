@@ -42,7 +42,9 @@ Weekly forecast for specific location:
 
 ![weather2](https://github.com/user-attachments/assets/251448fc-d81f-4291-a906-31e5939590eb)
 
-## Dependencies
+## Optional Dependencies
+
+### macOS
 
 On macOS an optional dependency is the [CoreLocationCli](https://github.com/fulldecent/corelocationcli) tool. You can install it via brew:
 
@@ -53,6 +55,18 @@ brew install corelocationcli
 This is completely optional, and `weather` will work perfectly fine without it. It will simply fall back on IP geolocation if it's not available.
 
 ⚠ Note: if you choose to use `corelocationcli` please make sure you test it first, and give it permission to access the location service.
+
+### Linux
+
+On Linux an optional dependency is is the `geoclue` service. You can install it via your package manager. For example, on Ubuntu:
+
+```bash
+sudo apt install geoclue-2.0
+```
+
+The `weather` tool uses the `where-am-i` demo tool that ships with `geoclue` by default to get your location.
+
+⚠ Note: On some systems `geoclue` package is broken, and you may need to fix it using [these instructions](https://askubuntu.com/a/1547897).
 
 ## Installing
 
