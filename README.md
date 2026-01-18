@@ -6,7 +6,7 @@ This tool queries the [National Weather Service](https://weather-gov.github.io/a
 
 ⚠ Note: internet connection required.
 
-By default, your location is determined by based on ip address geolocation via [ip-api.com](https://ip-api.com/) and then passed to weather service API to get your forecasting area.
+By default, your location is determined either by querying your devices location service, or based on ip address geolocation via [ip-api.com](https://ip-api.com/) and then passed to weather service API to get your forecasting area.
 
 Note that using a VPN may skew the results.
 
@@ -25,6 +25,8 @@ You can use the `-location` switch to check what location of forecast. Please no
             show the forecast for the entire week
       -zip <zip code>
             show the forecast a specific zip code
+    -debug
+            show debugging messages
 
 Example:
 
@@ -40,6 +42,17 @@ Weekly forecast for specific location:
 
 ![weather2](https://github.com/user-attachments/assets/251448fc-d81f-4291-a906-31e5939590eb)
 
+## Dependencies
+
+On macOS an optional dependency is the [CoreLocationCli](https://github.com/fulldecent/corelocationcli) tool. You can install it via brew:
+
+```bash
+brew install corelocationcli
+```
+
+This is completely optional, and `weather` will work perfectly fine without it. It will simply fall back on IP geolocation if it's not available.
+
+⚠ Note: if you choose to use `corelocationcli` please make sure you test it first, and give it permission to access the location service.
 
 ## Installing
 
