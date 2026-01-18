@@ -25,7 +25,7 @@ You can use the `-location` switch to check what location of forecast. Please no
             show the forecast for the entire week
       -zip <zip code>
             show the forecast a specific zip code
-    -debug
+      -debug
             show debugging messages
 
 Example:
@@ -64,7 +64,7 @@ On Linux an optional dependency is is the `geoclue` service. You can install it 
 sudo apt install geoclue-2.0
 ```
 
-The `weather` tool uses the `where-am-i` demo tool that ships with `geoclue` by default to get your location.
+The `weather` tool uses the `where-am-i` demo tool that ships with `geoclue` by default to get your location. This is optional, and `weather` will continue to work even if the tool is not present or not working by falling back on built-in IP geolocation.
 
 ⚠ Note: On some systems `geoclue` package is broken, and you may need to fix it using [these instructions](https://askubuntu.com/a/1547897).
 
