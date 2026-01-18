@@ -17,6 +17,8 @@ import (
 
 const version = "0.2.0"
 
+var debug bool
+
 // the weather forecast struct
 // the relvant data is in the properties.Periods array
 // the 0 intex is the current forecast and it goes up to 13
@@ -73,6 +75,8 @@ func main() {
     var ver bool
     flag.BoolVar(&ver, "version", false, "display version number and exit")
 
+	flag.BoolVar(&debug, "debug", false, "show debug messages")
+
     var show_location bool
     flag.BoolVar(&show_location, "location", false, "display the location of the forecast")
 
@@ -89,23 +93,33 @@ func main() {
         fmt.Println(filepath.Base(os.Args[0]), "version", version)
         os.Exit(0)
     }
+	
+	dmsg("Debug mode enabled")
+	dmsg("version " + version)
+
 
     var lat, lon float64
     // get the latitude and longitude
     if zip != "none" {
+		dmsg("Getting location for zip code: " + zip)
         lat, lon = getLatLongFromZip(zip)
     } else {
 
+		dmsg("Attempting to retreive location from OS location services")
 		var err error
 		lat, lon, err = getLatLongFromOS()
 		if err != nil {
 			// fallback to IP based location
+			dmsg("Falling back to IP based location")
 			lat, lon = getLatLong()
 		}
     }
-        
+    dmsg(fmt.Sprintf("Latitude: %f Longitude: %f", lat, lon)) 
+
     forecast_url, place := getForecastInformation(lat, lon)
     forecast := getForecast(forecast_url)
+
+	dmsg("Location: " + place)
 
     if show_location {
         fmt.Fprintln(color.Output, "🗺 ", color.GreenString(place))
@@ -118,14 +132,19 @@ func main() {
         printForecast(forecast, i)
     }
 
+}
 
+func dmsg(msg string) {
+	if debug {
+		fmt.Fprintln(os.Stderr, color.BlackString(msg))
+	}
 }
 
 // get the latitude and longitude from
 // the user's IP address via ip-api.com
 func getLatLong() (float64, float64) {
 
-    
+    dmsg("Getting location from ip-api.com")
     // get http://ip-api.com/json/ and parse
     resp, err := http.Get("http://ip-api.com/json/")
     if err != nil {
@@ -174,12 +193,16 @@ func getLatLongFromOS() (float64, float64, error) {
 	os := runtime.GOOS
 	
 	if strings.Contains(strings.ToLower(os), "windows") {
+		dmsg("Windows detected")
 		return getLatLongWindows()
 	} else if strings.Contains(strings.ToLower(os), "darwin") {
+		dmsg("macOS detected")
 		return getLatLongMac()
 	} else if strings.Contains(strings.ToLower(os), "linux") {
+		dmsg("Linux detected")
 		return getLatLongLinux()
 	} else {
+		dmsg("Unsupported OS: " + os)
 		return 0, 0, fmt.Errorf("unsupported OS")
 	}
 
@@ -191,17 +214,22 @@ func getLatLongWindows() (float64, float64, error) {
 
 func getLatLongMac() (float64, float64, error) {
 
+	dmsg("Checking if CoreLocationCLI is installed")
 	coreLocationCLIPath := "/opt/homebrew/bin/CoreLocationCLI"
 
 	// check if CoreLocationCLI is installed
 	_, err := os.Stat(coreLocationCLIPath)
 	if os.IsNotExist(err) {
-		return 0, 0, fmt.Errorf("CoreLocationCLI not installed")
+		dmsg("CoreLocationCLI not found in " + coreLocationCLIPath)
+		dmsg("Run 'brew install corelocationcli' to install it")
+		return 0, 0, fmt.Errorf("CoreLocationCLI is not installed")
 	}
 
 	// run CoreLocationCLI on the command line, parse the output to get lat and long
 	out, err := exec.Command(coreLocationCLIPath).Output()
 	if err != nil {
+		dmsg("Error running CoreLocationCLI: " + err.Error())
+		dmsg("Make sure you allow location services access for the CoreLocationCLI app")
 		return 0, 0, err
 	}
 
@@ -233,6 +261,7 @@ func getLatLongLinux() (float64, float64, error) {
 // get latitude and longitude based on user provided US zip cdode
 func getLatLongFromZip(zip string) (float64, float64) {
     
+		dmsg("Getting location for zip code: " + zip + " from zippopotam.us")
         // get http://api.zippopotam.us/us/ and parse
         resp, err := http.Get("http://api.zippopotam.us/us/" + zip)
         if err != nil {
@@ -286,6 +315,8 @@ func getLatLongFromZip(zip string) (float64, float64) {
 // get weather.gov forecast point from latitude and longitude
 // return the forecast url and location
 func getForecastInformation(lat, lon float64) (string, string) {
+
+	dmsg("Getting forecast information from weather.gov")
 
     lat_str := fmt.Sprintf("%f", lat)
     lon_str := fmt.Sprintf("%f", lon)
@@ -367,6 +398,8 @@ func getForecastInformation(lat, lon float64) (string, string) {
 
 // get forecast from forecast URL
 func getForecast(forecast_url string) Forecast {
+
+		dmsg("Getting forecast from " + forecast_url)	
     
         resp, err := http.Get(forecast_url)
         if err != nil {
