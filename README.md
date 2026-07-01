@@ -78,7 +78,15 @@ There are few different ways:
  
     go install github.com/maciakl/weather@latest
 
-### Mac & Linux
+### macOS
+
+Use `homebrew`:
+
+    brew tap maciakl/tap
+    brew trust maciakl/tap
+    brew install weather
+
+### Linux & macOS
 
 Install via [grab](https://github.com/maciakl/grab):
 
